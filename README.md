@@ -19,4 +19,5 @@ A repo for programming exercise.
            ```
            run: `make run ARGS="Hello"`, 
            output: `Hello`
-
+  - c/ex5: Read a simple c script line by line to know the basic code structure.
+  - 

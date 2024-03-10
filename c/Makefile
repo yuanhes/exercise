@@ -5,6 +5,7 @@ all: clean setup ex
 
 clean: 
 	rm -rf ex$(N)/ex$(N).$(M)
+	rm -rf ex$(N)/ex$(N).$(M).c
 
 setup:
 	mkdir -p ex$(N)
