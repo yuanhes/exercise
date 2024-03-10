@@ -20,4 +20,5 @@ A repo for programming exercise.
            run: `make run ARGS="Hello"`, 
            output: `Hello`
   - c/ex5: Read a simple c script line by line to know the basic code structure.
+  - c/ex6: A script containning multiple variables of different data types. Print them with `printf`.
   - 
