@@ -29,7 +29,7 @@ A repo for programming exercise.
         - %c -> (empty) 
         - %s -> (null)
         - %d -> 0
-    - printf char of number zero `0` with %s -> Segmentation fault
+    - printf char of number zero `'0'` with %s -> Segmentation fault
     - 'unsigned long' type integer:
         - printf with %lu
         - limit: 0 ~ +2^64 - 1
