@@ -21,4 +21,16 @@ A repo for programming exercise.
            output: `Hello`
   - c/ex5: Read a simple c script line by line to know the basic code structure.
   - c/ex6: A script containning multiple variables of different data types. Print them with `printf`.
-  - 
+  - c/ex7: A simple code for knowing different types of data. 
+    - 'long' type integer:
+        - printf with %ld
+        - limit: -2^63 ~ +2^63 - 1
+    - printf special char `'\0'` (null_byte) with:
+        - %c -> (empty) 
+        - %s -> (null)
+        - %d -> 0
+    - printf char of number zero `0` with %s -> Segmentation fault
+    - 'unsigned long' type integer:
+        - printf with %lu
+        - limit: 0 ~ +2^64 - 1
+
