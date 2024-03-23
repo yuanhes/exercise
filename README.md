@@ -37,3 +37,4 @@ A repo for programming exercise.
   - c/ex8: Play with array of numbers, array of chars and string by `printf` / `sizeof`
     - string is array of chars ending with `null` character, i.e. `'\0'`.
     - `sizeof()` returns the allocated memory for the operand, so, for a string, it will take the ending `null` into count, then usually looks 1 more than the number of characters of the string. ([Ref.](https://www.quora.com/What-is-the-difference-between-strlen-and-sizeof-in-C-programming-language))
+  - c/ex9: Involving something like array initialization, assigning string with pointer ... (Not really know what the author wants readers to know....just go throug)
