@@ -38,3 +38,13 @@ A repo for programming exercise.
     - string is array of chars ending with `null` character, i.e. `'\0'`.
     - `sizeof()` returns the allocated memory for the operand, so, for a string, it will take the ending `null` into count, then usually looks 1 more than the number of characters of the string. ([Ref.](https://www.quora.com/What-is-the-difference-between-strlen-and-sizeof-in-C-programming-language))
   - c/ex9: Involve something like array initialization, assigning string with pointer ... (Not really know what the author wants readers to know....just go through)
+  - c/ex10: Array of strings and loop
+    - `argv[0]` is the command/executable itself.
+    - Format of a `for` loop:
+        ```
+        for(INITIALIZER; TEST; INCREMENTER) {
+            CODE;
+        }
+        ```
+      Executing order: INITIALIZER, TEST, CODE, INCREMENTER, TEST, CODE, INCREMENTER, ... until TEST being false.
+
