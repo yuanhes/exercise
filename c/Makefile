@@ -13,4 +13,4 @@ setup:
 	
 ex:
 	cp -rf ex$(N)/ex$(N).c ex$(N)/ex$(N).$(M).c
-	cc -Wall -g ex$(N)/ex$(N).$(M).c -o ex$(N)/ex$(N).$(M)
+	cc $(CFLAGS)  ex$(N)/ex$(N).$(M).c -o ex$(N)/ex$(N).$(M)

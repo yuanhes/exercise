@@ -33,4 +33,7 @@ A repo for programming exercise.
     - 'unsigned long' type integer:
         - printf with %lu
         - limit: 0 ~ +2^64 - 1
-
+* 2024/03/23
+  - c/ex8: Play with array of numbers, array of chars and string by `printf` / `sizeof`
+    - string is array of chars ending with `null` character, i.e. `'\0'`.
+    - `sizeoff()` returns the allocated memory for the operand, so, for a string, it will take the ending `null` into counts, then usually looks 1 more than the number of characters of the string. ([Ref.](https://www.quora.com/What-is-the-difference-between-strlen-and-sizeof-in-C-programming-language)
