@@ -62,5 +62,7 @@ A repo for programming exercise.
         printf("Mem addr of var: %p \n" &var);
         ```
         output example: ```Mem addr of var: 0x7ffe2333ce7c ```
+    - 1 byte = 8 bit
+        - int -> 4 byte : 2^32 counts , -2^31 ~ +2^31 -1 
+        - char *[] -> 8 byte : 63 chars + 1 null
 
-        
