@@ -65,4 +65,6 @@ A repo for programming exercise.
     - 1 byte = 8 bit
         - int -> 4 byte : 2^32 counts , -2^31 ~ +2^31 -1 
         - char *[] -> 8 byte : 63 chars + 1 null
+  - c/ex12: if - else conditional statement.
+    - Better do not omit the curly braces `{}` for conditional statements.
 
