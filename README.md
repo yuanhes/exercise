@@ -67,4 +67,7 @@ A repo for programming exercise.
         - char *[] -> 8 byte : 63 chars + 1 null
   - c/ex12: if - else conditional statement.
     - Better do not omit the curly braces `{}` for conditional statements.
+  - c/ex13: switch statement
+    - Compiler will convert it into a jumping table.
+    - Don't forget `break` and `default`
 
