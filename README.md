@@ -47,4 +47,20 @@ A repo for programming exercise.
         }
         ```
       Executing order: INITIALIZER, TEST, CODE, INCREMENTER, TEST, CODE, INCREMENTER, ... until TEST being false.
+* 2024/03/24
+  - c/ex11: While loop
+    - Format of a `while` loop:
+        ```
+        while (TEST) {
+            CODE;
+        }
+        ```
+    - Usually `for` loop is more robust, since it has INITIALIZER and INCREMENTER that help avoiding errors.
+    - Way to print the memory address of a variable:
+        ```
+        int var = 0;
+        printf("Mem addr of var: %p \n" &var);
+        ```
+        output example: ```Mem addr of var: 0x7ffe2333ce7c ```
 
+        
