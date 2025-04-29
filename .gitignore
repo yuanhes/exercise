@@ -8,3 +8,4 @@ nohup.out
 .coverage
 htmlcov/
 *.swp
+temp/

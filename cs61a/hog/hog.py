@@ -57,9 +57,21 @@ def boar_brawl(player_score, opponent_score):
     player_score:     The total score of the current player.
     opponent_score:   The total score of the other player.
 
+    >>> boar_brawl(21, 46)
+    9
+    >>> boar_brawl(45, 52)
+    1
+    >>> boar_brawl(2, 5)
+    6
+    >>> a = boar_brawl(129, 116)
+    >>> a
+    24
     """
     # BEGIN PROBLEM 2
     "*** YOUR CODE HERE ***"
+    a = player_score % 10
+    b = opponent_score // 10 % 10
+    return max(3 * abs(a - b), 1)
     # END PROBLEM 2
 
 
@@ -71,6 +83,14 @@ def take_turn(num_rolls, player_score, opponent_score, dice=six_sided):
     player_score:    The total score of the current player.
     opponent_score:  The total score of the other player.
     dice:            A function that simulates a single dice roll outcome.
+
+    >>> take_turn(0, 21, 46)
+    9
+    >>> take_turn(3, 21, 46, make_test_dice(3, 2, 1))
+    1
+    >>> a = take_turn(2, 21, 46, make_test_dice(3, 2, 1))
+    >>> a
+    5
     """
     # Leave these assert statements here; they help check for errors.
     assert type(num_rolls) == int, "num_rolls must be an integer."
@@ -78,6 +98,10 @@ def take_turn(num_rolls, player_score, opponent_score, dice=six_sided):
     assert num_rolls <= 10, "Cannot roll more than 10 dice."
     # BEGIN PROBLEM 3
     "*** YOUR CODE HERE ***"
+    if num_rolls == 0:
+        return boar_brawl(player_score, opponent_score)
+    else:
+        return roll_dice(num_rolls, dice)
     # END PROBLEM 3
 
 
@@ -91,10 +115,13 @@ def simple_update(num_rolls, player_score, opponent_score, dice=six_sided):
 
 def is_prime(n):
     """Return whether N is prime."""
+    assert type(n) == int and n > 0 , "n must be a positive integer."
+
     if n == 1:
         return False
     k = 2
-    while k < n:
+    threshold = int(n ** 0.5)
+    while k <= threshold:
         if n % k == 0:
             return False
         k += 1
@@ -102,25 +129,67 @@ def is_prime(n):
 
 
 def num_factors(n):
-    """Return the number of factors of N, including 1 and N itself."""
+    """Return the number of factors of N, including 1 and N itself.
+    
+    >>> num_factors(1)
+    1
+    >>> num_factors(2)
+    2
+    >>> num_factors(9)
+    3
+    >>> num_factors(12)
+    6
+    """
+    assert type(n) == int and n > 0 , "n must be a positive integer."
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
+    if n == 1:
+        return 1
+    k, count = 2, 2
+    threshold = n // 2
+    while k <= threshold:
+        if n % k == 0:
+            count += 1
+        k += 1
+    return count
     # END PROBLEM 4
 
 
 def sus_points(score):
-    """Return the new score of a player taking into account the Sus Fuss rule."""
+    """Return the new score of a player taking into account the Sus Fuss rule.
+    
+    >>> sus_points(5)
+    5
+    >>> sus_points(21)
+    23
+    >>> sus_points(12)
+    12
+    """
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
+    if num_factors(score) in [3, 4]:
+        while not is_prime(score):
+            score += 1
+    return score
     # END PROBLEM 4
 
 
 def sus_update(num_rolls, player_score, opponent_score, dice=six_sided):
     """Return the total score of a player who starts their turn with
     PLAYER_SCORE and then rolls NUM_ROLLS DICE, *including* Sus Fuss.
+
+    >>> sus_update(0, 21, 46, make_test_dice(3, 2, 1))
+    30
+    >>> sus_update(3, 21, 46, make_test_dice(3, 2, 1))
+    23
+    >>> sus_update(2, 21, 46, make_test_dice(3, 2, 1))
+    29
     """
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
+    score = player_score + take_turn(num_rolls, player_score, opponent_score, dice)
+    score = sus_points(score)
+    return score
     # END PROBLEM 4
 
 
@@ -159,6 +228,13 @@ def play(strategy0, strategy1, update, score0=0, score1=0, dice=six_sided, goal=
     who = 0  # Who is about to take a turn, 0 (first) or 1 (second)
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
+    while (score0 < goal) and (score1 < goal):
+        if who == 0:
+            score0 = update(strategy0(score0, score1), score0, score1, dice)
+        else:
+            score1 = update(strategy1(score1, score0), score1, score0, dice)
+        who = 1 - who
+        #print("DEBUG:", score0, score1)
     # END PROBLEM 5
     return score0, score1
 
