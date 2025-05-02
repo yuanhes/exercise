@@ -261,6 +261,9 @@ def always_roll(n):
 
     # BEGIN PROBLEM 6
     "*** YOUR CODE HERE ***"
+    def strategy(a, b):
+        return n
+    return strategy
     # END PROBLEM 6
 
 
@@ -270,7 +273,7 @@ def catch_up(score, opponent_score):
 
     >>> catch_up(9, 4)
     5
-    >>> strategy(17, 18)
+    >>> catch_up(17, 18)
     6
     """
     if score < opponent_score:
@@ -293,6 +296,16 @@ def is_always_roll(strategy, goal=GOAL):
     """
     # BEGIN PROBLEM 7
     "*** YOUR CODE HERE ***"
+    num_init = strategy(0, 0)
+    i = 0
+    while i < goal:
+        j = 0
+        while j < goal:
+            if strategy(i, j) != num_init:
+                return False
+            j += 1
+        i += 1
+    return True
     # END PROBLEM 7
 
 
@@ -310,6 +323,13 @@ def make_averaged(original_function, times_called=1000):
 
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    def averaged_function(*args):
+        i, total = 0, 0
+        while i < times_called:
+            total += original_function(*args)
+            i += 1
+        return total / times_called
+    return averaged_function
     # END PROBLEM 8
 
 
@@ -323,6 +343,15 @@ def max_scoring_num_rolls(dice=six_sided, times_called=1000):
     """
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    averaged_roll_dice = make_averaged(roll_dice, times_called)
+    i, max_score = 1, -1
+    while i <= 10:
+        score = averaged_roll_dice(i, dice)
+        if score > max_score:
+            num_rolls = i
+            max_score = score
+        i += 1
+    return num_rolls
     # END PROBLEM 9
 
 
@@ -353,7 +382,9 @@ def run_experiments():
     print("always_roll(6) win rate:", average_win_rate(always_roll(6)))  # near 0.5
     print("catch_up win rate:", average_win_rate(catch_up))
     print("always_roll(3) win rate:", average_win_rate(always_roll(3)))
+    print("always_roll(5) win rate:", average_win_rate(always_roll(5)))
     print("always_roll(8) win rate:", average_win_rate(always_roll(8)))
+    print("always_roll(10) win rate:", average_win_rate(always_roll(10)))
 
     print("boar_strategy win rate:", average_win_rate(boar_strategy))
     print("sus_strategy win rate:", average_win_rate(sus_strategy))
@@ -368,7 +399,10 @@ def boar_strategy(score, opponent_score, threshold=11, num_rolls=6):
     points, and returns NUM_ROLLS otherwise. Ignore the Sus Fuss rule.
     """
     # BEGIN PROBLEM 10
-    return num_rolls  # Remove this line once implemented.
+    if boar_brawl(score, opponent_score) >= threshold:
+        return 0
+    else:
+        return num_rolls
     # END PROBLEM 10
 
 
@@ -377,17 +411,46 @@ def sus_strategy(score, opponent_score, threshold=11, num_rolls=6):
     THRESHOLD points, and returns NUM_ROLLS otherwise. Consider both the Boar Brawl and
     Suss Fuss rules."""
     # BEGIN PROBLEM 11
-    return num_rolls  # Remove this line once implemented.
+    if sus_points(score + boar_brawl(score, opponent_score)) - score >= threshold:
+        return 0
+    else:
+        return num_rolls
     # END PROBLEM 11
 
+def calc_roll_expectations(max_num_rolls=10, dice=six_sided):
+    """Calculate the expectation of rolls with num_rolls from 1 to max_num_rolls
+    """
+    expectations = []
+    averaged_roll_dice = make_averaged(roll_dice)
+    i = 1
+    while i < max_num_rolls:
+        expectations += [averaged_roll_dice(i, dice)]
+        i += 1
+    return expectations
 
-def final_strategy(score, opponent_score):
+ROLL_EXPECTATIONS = calc_roll_expectations()
+
+def roll_expectation(num_rolls):
+    assert type(num_rolls) == int and num_rolls > 0 and num_rolls <= 10, "num_rolls must be positive integer less than 10. "
+    return ROLL_EXPECTATIONS[num_rolls - 1]
+
+def final_strategy(score, opponent_score, goal=GOAL, num_rolls=6):
     """Write a brief description of your final strategy.
 
     *** YOUR DESCRIPTION HERE ***
     """
     # BEGIN PROBLEM 12
-    return 6  # Remove this line once implemented.
+    if sus_points(score + boar_brawl(score, opponent_score)) >= goal:
+        return 0 
+    i = 1
+    while i < num_rolls:
+        if score + roll_expectation(i) >= goal:
+            return i
+        i += 1
+    if sus_points(score + boar_brawl(score, opponent_score)) - score >= roll_expectation(num_rolls):
+        return 0
+    else:
+        return num_rolls
     # END PROBLEM 12
 
 
