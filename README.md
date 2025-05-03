@@ -1,7 +1,7 @@
 ## **Intro**
 A repo for programming exercise.
 
-## **Log**
+## **Log & Notes**
 * 2024/03/09
   - Start `c` programming exercise based on [Learn C The Hard Way (Chiniese Version)](https://www.cntofu.com/book/25/index.html) .
   - c/ex1: Compile an example for printing "hello world".
@@ -71,3 +71,19 @@ A repo for programming exercise.
     - Compiler will convert it into a jumping table.
     - Don't forget `break` and `default`
     - 
+* 2025/05/03
+  - cs61a/week3: L.7 Functional Abstraction ; L.8 Function Examples
+    - Function Decorators:
+        ```
+        @deco_func
+        def triple(x):
+            return 3 * x
+        ```
+        is **identical** to:
+        ```
+        def triple(x):
+            return 3 * x
+        triple = deco_func(triple)
+        ```
+        where the `deco_func` is usually a high-order function that returns function.
+    -
