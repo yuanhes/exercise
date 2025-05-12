@@ -7,5 +7,5 @@ __pycache__
 nohup.out
 .coverage
 htmlcov/
-*.swp
+.*.sw?
 temp/
