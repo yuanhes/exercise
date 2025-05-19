@@ -171,10 +171,10 @@ def partial_reverse(s, start):
     [1, 2, 7, 6, 5, 3, 4]
     """
     "*** YOUR CODE HERE ***"
-    for i in range(len(s)):
-        if s[i] == start:
-            break
-    s[i+1:] = list(reversed(s[i+1:]))
+    #for i in range(len(s)):
+    #    if s[i] == start:
+    #        break
+    s[start:] = list(reversed(s[start:]))
 
 
 
