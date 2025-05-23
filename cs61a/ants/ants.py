@@ -125,7 +125,14 @@ class Ant(Insect):
             place.ant = self
         else:
             # BEGIN Problem 8b
-            assert place.ant is None, 'Too many ants in {0}'.format(place)
+            ant_original = place.ant
+            if self.can_contain(ant_original):
+                self.store_ant(ant_original)
+                place.ant = self
+            elif ant_original.can_contain(self):
+                ant_original.store_ant(self)
+            else:
+                assert place.ant is None, 'Too many ants in {0}'.format(place)
             # END Problem 8b
         Insect.add_to(self, place)
 
@@ -172,6 +179,8 @@ class ThrowerAnt(Ant):
     damage = 1
     # ADD/OVERRIDE CLASS ATTRIBUTES HERE
     food_cost = 3
+    lower_bound = 0
+    upper_bound = float('inf')
 
     def nearest_bee(self):
         """Return a random Bee from the nearest Place (excluding the Hive) that contains Bees and is reachable from
@@ -182,10 +191,12 @@ class ThrowerAnt(Ant):
         # BEGIN Problem 3 and 4
         #return random_bee(self.place.bees) # REPLACE THIS LINE
         near_place = self.place
-        while near_place and not near_place.is_hive:
-            if near_place.bees:
+        distance = 0
+        while near_place and not near_place.is_hive and distance <= self.upper_bound:
+            if distance >= self.lower_bound and near_place.bees:
                 return random_bee(near_place.bees)
             near_place = near_place.entrance
+            distance += 1
         return None
         # END Problem 3 and 4
 
@@ -218,7 +229,9 @@ class ShortThrower(ThrowerAnt):
     food_cost = 2
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 4
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
+    lower_bound = 0
+    upper_bound = 3
     # END Problem 4
 
 
@@ -229,7 +242,9 @@ class LongThrower(ThrowerAnt):
     food_cost = 2
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 4
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
+    lower_bound = 5
+    upper_bound = float('inf')
     # END Problem 4
 
 
@@ -241,7 +256,7 @@ class FireAnt(Ant):
     food_cost = 5
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 5
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
     # END Problem 5
 
     def __init__(self, health=3):
@@ -257,14 +272,53 @@ class FireAnt(Ant):
         """
         # BEGIN Problem 5
         "*** YOUR CODE HERE ***"
+        place = self.place
+        bees = place.bees
+        super().reduce_health(amount)
+        fire_damage = amount
+        if self.health <= 0:
+            fire_damage += self.damage
+        for bee in list(bees):
+            bee.reduce_health(fire_damage)
         # END Problem 5
 
 # BEGIN Problem 6
 # The WallAnt class
+class WallAnt(Ant):
+    """
+    WallAnt does nothing but has a large health value.
+    """
+    name = 'Wall'
+    food_cost = 4
+    implemented = True
+
+    def __init__(self, health=4):
+        super().__init__(health)
 # END Problem 6
 
 # BEGIN Problem 7
 # The HungryAnt Class
+class HungryAnt(Ant):
+    """
+    HungryAnt eats a whole bee in its place each time and chews for a while.
+    """
+    name = 'Hungry'
+    food_cost = 4
+    chew_cooldown = 3
+    implemented = True
+
+    def __init__(self, health=1):
+        super().__init__(health)
+        self.cooldown = 0
+
+    def action(self, gamestate):
+        place = self.place
+        if self.cooldown == 0 and place.bees:
+            bee = random_bee(place.bees)
+            bee.reduce_health(bee.health)
+            self.cooldown = self.chew_cooldown
+        elif self.cooldown > 0:
+            self.cooldown -= 1
 # END Problem 7
 
 
@@ -281,11 +335,18 @@ class ContainerAnt(Ant):
     def can_contain(self, other):
         # BEGIN Problem 8a
         "*** YOUR CODE HERE ***"
+        return self.ant_contained == None and other.is_container == False
         # END Problem 8a
 
     def store_ant(self, ant):
         # BEGIN Problem 8a
         "*** YOUR CODE HERE ***"
+        if self.can_contain(ant):
+            self.ant_contained = ant
+            ##if ant.place:
+            #    place = ant.place
+            #    self.place = place
+            #    place.ant = self
         # END Problem 8a
 
     def remove_ant(self, ant):
@@ -306,6 +367,8 @@ class ContainerAnt(Ant):
     def action(self, gamestate):
         # BEGIN Problem 8a
         "*** YOUR CODE HERE ***"
+        if self.ant_contained:
+            self.ant_contained.action(gamestate)
         # END Problem 8a
 
 
@@ -316,11 +379,30 @@ class ProtectorAnt(ContainerAnt):
     food_cost = 4
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 8c
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
+    
+    def __init__(self, health=2):
+        super().__init__(health)
     # END Problem 8c
 
 # BEGIN Problem 9
 # The TankAnt class
+class TankAnt(ContainerAnt):
+    """TankAnt protects other Ants and attacks Bees."""
+
+    name = 'Tank'
+    food_cost = 6
+    damage = 1
+    implemented = True
+
+    def __init__(self, health=2):
+        super().__init__(health)
+
+    def action(self, gamestate):
+        place = self.place
+        for bee in list(place.bees):
+            bee.reduce_health(self.damage)
+        ContainerAnt.action(self, gamestate)
 # END Problem 9
 
 
