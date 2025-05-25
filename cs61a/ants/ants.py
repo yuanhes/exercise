@@ -484,12 +484,24 @@ class SlowThrower(ThrowerAnt):
     name = 'Slow'
     food_cost = 6
     # BEGIN Problem EC 1
-    implemented = False   # Change to True to view in the GUI
+    damage = 0
+    syrup_duration = 5
+    implemented = True   # Change to True to view in the GUI
     # END Problem EC 1
 
     def throw_at(self, target):
         # BEGIN Problem EC 1
         "*** YOUR CODE HERE ***"
+        ThrowerAnt.throw_at(self, target)
+        target.slow_turns = self.syrup_duration
+        def slowed_action(gamestate):
+            if target.slow_turns > 0:
+                if gamestate.time % 2 == 0:
+                    Bee.action(target, gamestate)
+                target.slow_turns -= 1
+            else:
+                Bee.action(target, gamestate)
+        target.action = slowed_action
         # END Problem EC 1
 
 
@@ -499,12 +511,16 @@ class ScaryThrower(ThrowerAnt):
     name = 'Scary'
     food_cost = 6
     # BEGIN Problem EC 2
-    implemented = False   # Change to True to view in the GUI
+    damage = 0
+    scare_duration = 2
+    implemented = True   # Change to True to view in the GUI
     # END Problem EC 2
 
     def throw_at(self, target):
         # BEGIN Problem EC 2
         "*** YOUR CODE HERE ***"
+        ThrowerAnt.throw_at(self, target)
+        target.scare(self.scare_duration)
         # END Problem EC 2
 
 
@@ -575,6 +591,10 @@ class Bee(Insect):
     damage = 1
     is_waterproof = True
 
+    def __init__(self, health, place=None):
+        super().__init__(health, place)
+        self.scared = None
+
     def sting(self, ant):
         """Attack an ANT, reducing its health by 1."""
         ant.reduce_health(self.damage)
@@ -594,18 +614,22 @@ class Bee(Insect):
         return self.place.ant is not None
         # END Problem EC 3
 
+
     def action(self, gamestate):
         """A Bee's action stings the Ant that blocks its exit if it is blocked,
         or moves to the exit of its current place otherwise.
 
         gamestate -- The GameState, used to access game state information.
         """
-        destination = self.place.exit
-
+        if self.scared:
+            destination = self.place.entrance
+            self.scared -= 1
+        else:
+            destination = self.place.exit
 
         if self.blocked():
             self.sting(self.place.ant)
-        elif self.health > 0 and destination is not None:
+        elif self.health > 0 and destination is not None and not destination.is_hive:
             self.move_to(destination)
 
     def add_to(self, place):
@@ -623,6 +647,8 @@ class Bee(Insect):
         """
         # BEGIN Problem EC 2
         "*** YOUR CODE HERE ***"
+        if self.scared is None:
+            self.scared = length
         # END Problem EC 2
 
 
