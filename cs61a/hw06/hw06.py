@@ -127,6 +127,28 @@ def store_digits(n):
     >>> print("Do not use str or reversed!") if any([r in cleaned for r in ["str", "reversed"]]) else None
     """
     "*** YOUR CODE HERE ***"
+    assert n > 0, "N must be a positive number."
+    
+#    def linkfylist(l):
+#        if len(l) == 1:
+#            return Link(l[0])
+#        else:
+#            return Link(l[0], linkfylist(l[1:]))
+#
+#    d, m = 0, n
+#    while m > 0:
+#        m = m // 10
+#        d += 1
+#    l = []
+#    while d > 0:
+#        q, d = n // (10 ** (d - 1)) % 10, d - 1
+#        l.append(q)
+#    return linkfylist(l)
+    result = Link.empty
+    while n > 0:
+        result = Link(n % 10, result)
+        n = n // 10
+    return result
 
 
 def deep_map_mut(func, s):
@@ -149,6 +171,15 @@ def deep_map_mut(func, s):
     <9 <16> 25 36>
     """
     "*** YOUR CODE HERE ***"
+    if s != Link.empty:
+        if isinstance(s.first, int):
+            s.first = func(s.first)
+        elif isinstance(s.first, Link):
+            deep_map_mut(func, s.first)
+        if isinstance(s.rest, int):
+            s.rest = func(s.rest)
+        elif isinstance(s.rest, Link):
+            deep_map_mut(func, s.rest)
 
 
 def prune_small(t, n):
@@ -168,11 +199,11 @@ def prune_small(t, n):
     >>> t3
     Tree(6, [Tree(1), Tree(3, [Tree(1), Tree(2)])])
     """
-    while ____:
-        largest = max(____, key=____)
+    while len(t.branches) > n:
+        largest = max(t.branches, key=(lambda x: x.label))
         t.branches.remove(largest)
     for b in t.branches:
-        ____
+        prune_small(b, n)
 
 
 def delete(t, x):
@@ -195,13 +226,13 @@ def delete(t, x):
     Tree(1, [Tree(4), Tree(5), Tree(3, [Tree(6)]), Tree(6), Tree(7), Tree(8), Tree(4)])
     """
     new_branches = []
-    for _________ in ________________:
-        _______________________
+    for b in t.branches:
+        delete(b, x)
         if b.label == x:
-            __________________________________
+            new_branches += b.branches
         else:
-            __________________________________
-    t.branches = ___________________
+            new_branches += [b]
+    t.branches = new_branches 
 
 
 def two_list(vals, counts):
@@ -223,6 +254,12 @@ def two_list(vals, counts):
     Link(1, Link(1, Link(3, Link(3, Link(2)))))
     """
     "*** YOUR CODE HERE ***"
+    assert len(vals) == len(counts), "VALS and COUNTS must be the same size."
+    result = Link.empty
+    for i in range(len(vals)-1, -1, -1):
+        for j in range(counts[i]):
+            result = Link(vals[i], result)
+    return result
 
 
 class Link:
