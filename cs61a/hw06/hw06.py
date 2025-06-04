@@ -257,7 +257,7 @@ def two_list(vals, counts):
     assert len(vals) == len(counts), "VALS and COUNTS must be the same size."
     result = Link.empty
     for i in range(len(vals)-1, -1, -1):
-        for j in range(counts[i]):
+        for _ in range(counts[i]):
             result = Link(vals[i], result)
     return result
 
