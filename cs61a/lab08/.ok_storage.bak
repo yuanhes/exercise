@@ -1,3 +1,5 @@
 'add_d_leaves-correct', (0, 66)
 'has_path-correct', (512, 66)
 'level_mutation_link-correct', (1024, 66)
+'merge_numbers-correct', (1536, 66)
+'subseqs-correct', (2048, 66)

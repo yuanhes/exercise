@@ -148,6 +148,14 @@ def merge_numbers(n1, n2):
     3211
     """
     "*** YOUR CODE HERE ***"
+    if n1 == 0:
+        return n2
+    if n2 == 0:
+        return n1
+    if n1 % 10 <= n2 % 10:
+        return merge_numbers(n1 // 10, n2) * 10 + n1 % 10
+    else:
+        return merge_numbers(n1, n2 // 10) * 10 + n2 % 10
 
 
 def insert_into_all(item, nested_list):
@@ -160,6 +168,7 @@ def insert_into_all(item, nested_list):
     [[0], [0, 1, 2], [0, 3]]
     """
     "*** YOUR CODE HERE ***"
+    return [[item] + a for a in list(nested_list)]
 
 def subseqs(s):
     """Return a nested list (a list of lists) of all subsequences of S.
@@ -171,11 +180,11 @@ def subseqs(s):
     >>> subseqs([])
     [[]]
     """
-    if ________________:
-        ________________
+    if s == []:
+        return [[]]
     else:
-        ________________
-        ________________
+        ss = subseqs(s[1:])
+        return ss + insert_into_all(s[0], ss)
 
 
 def non_decrease_subseqs(s):
