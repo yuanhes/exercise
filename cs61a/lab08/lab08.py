@@ -203,14 +203,18 @@ def non_decrease_subseqs(s):
     """
     def subseq_helper(s, prev):
         if not s:
-            return ____________________
+            #print(s, prev, '--> s==[]')
+            return [[]]
         elif s[0] < prev:
-            return ____________________
+            #print(s, prev, '--> s[0]<prev')
+            return subseq_helper(s[1:], prev)
         else:
-            a = ______________________
-            b = ______________________
-            return insert_into_all(________, ______________) + ________________
-    return subseq_helper(____, ____)
+            #print(s, prev, '--> s[0]>=prev')
+            a = subseq_helper(s[1:], s[0])
+            b = subseq_helper(s[1:], prev)
+            #print(insert_into_all(s[0], a), " | ",  b)
+            return insert_into_all(s[0], a) + b
+    return subseq_helper(s, -1)
 
 
 def perms(seq):
@@ -236,6 +240,13 @@ def perms(seq):
     [['a', 'b'], ['b', 'a']]
     """
     "*** YOUR CODE HERE ***"
+    seq = list(seq)
+    if len(seq) <= 1:
+        yield seq
+    else:
+        for i in range(len(seq)):
+            for p in perms(seq[:i] + seq[i+1:]):
+                yield [seq[i]] + p
 
 
 def shuffle_pairs(lst):
@@ -263,9 +274,9 @@ def shuffle_pairs(lst):
     []
     """
     assert len(lst) % 2 == 0, 'len(lst) must be even'
-    half = ________________
-    for ____ in ____:
-        _____, _____ = _____, _____
+    half = len(lst) // 2
+    for i in range(half):
+        lst[2*i], lst[2*i+1] = lst[2*i+1], lst[2*i]
 
 
 def common_players(roster):
@@ -293,8 +304,12 @@ def common_players(roster):
     Team D ['ben']
     """
     "*** YOUR CODE HERE ***"
-    
-
+    teams = {}
+    for player, team in roster.items():
+        if team not in teams:
+            teams[team] = []
+        teams[team].append(player)
+    return teams
 
 # You do not need to understand what this function does. It is used for testing.
 def make_test_random():
@@ -365,9 +380,21 @@ class Player:
 
     def debate(self, other):
         "*** YOUR CODE HERE ***"
+        p1 = self.popularity
+        p2 = other.popularity
+        probability = max(0.1, p1 / (p1 + p2))
+        if self.random_func() < probability:
+            self.popularity += 50
+        else:
+            self.popularity = max(0, p1 - 50)
 
     def speech(self, other):
         "*** YOUR CODE HERE ***"
+        p1 = self.popularity
+        p2 = other.popularity
+        self.votes += p1 // 10
+        self.popularity += p1 // 10
+        other.popularity = max(0, p2 - p2 // 10)
 
     def choose(self, other):
         return self.speech
@@ -399,8 +426,11 @@ class Game:
     def play(self):
         while not self.game_over():
             "*** YOUR CODE HERE ***"
-            self.trun += 10
-            self.p1.votes += 100
+            if self.turn % 2 == 0:
+                self.p1.choose(self.p2)(self.p2)
+            else:
+                self.p2.choose(self.p1)(self.p1)
+            self.turn += 1
         return self.winner()
 
     def game_over(self):
@@ -408,6 +438,12 @@ class Game:
 
     def winner(self):
         "*** YOUR CODE HERE ***"
+        if self.p1.votes > self.p2.votes:
+            return self.p1
+        elif self.p1.votes < self.p2.votes:
+            return self.p2
+        else:
+            return None
 
 
 ### Phase 3: New Players
@@ -431,6 +467,10 @@ class AggressivePlayer(Player):
     """
     def choose(self, other):
         "*** YOUR CODE HERE ***"
+        if self.popularity <= other.popularity:
+            return self.debate
+        else:
+            return self.speech
 
 class CautiousPlayer(Player):
     """
@@ -448,6 +488,11 @@ class CautiousPlayer(Player):
     """
     def choose(self, other):
         "*** YOUR CODE HERE ***"
+        if self.popularity <= 0:
+            return self.debate
+        else:
+            return self.speech
+
 
 
 def every_other(s):
@@ -468,6 +513,10 @@ def every_other(s):
     Link(4)
     """
     "*** YOUR CODE HERE ***"
+    p = s
+    while p is not Link.empty and p.rest is not Link.empty:
+        p.rest = p.rest.rest
+        p = p.rest
 
 
 def slice_link(link, start, end):
@@ -479,6 +528,17 @@ def slice_link(link, start, end):
     <1 4 1>
     """
     "*** YOUR CODE HERE ***"
+    p = link
+    while start > 0 and p.rest is not Link.empty:
+        p = p.rest
+        start -= 1
+        end -= 1
+    q = p
+    while end > 1 and q.rest is not Link.empty:
+        q = q.rest
+        end -= 1
+    q.rest = Link.empty
+    return p
 
 
 class Tree:
